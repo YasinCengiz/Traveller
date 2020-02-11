@@ -121,11 +121,12 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             print("Error saving data")
         }
         
+        NotificationCenter.default.post(name: NSNotification.Name("newPlace"), object: nil)
+        navigationController?.popViewController(animated: true)
+        
     }
     
     
-    
-
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if selectedTitle == "" {
             let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude,
@@ -137,8 +138,47 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         }
     }
     
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+
+        if annotation is MKUserLocation {
+            return nil
+        }
+
+        let reuseID = "myAnnotation"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
+            pinView?.canShowCallout = true
+            pinView?.tintColor = UIColor.black
+            
+            let button = UIButton(type: UIButton.ButtonType.infoDark)
+            pinView?.rightCalloutAccessoryView = button
+        } else {
+            pinView?.annotation = annotation
+        }
+        
+        return pinView
+    }
     
-    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if selectedTitle != "" {
+            let requestedLocation = CLLocation(latitude: annotationLatitude, longitude: annotationLongitude)
+            CLGeocoder().reverseGeocodeLocation(requestedLocation) { (placemarks, error) in
+                
+                if let placemark = placemarks {
+                    if placemark.count > 0 {
+                        let newPlacemark = MKPlacemark(placemark: placemark[0])
+                        let item = MKMapItem(placemark: newPlacemark)
+                        item.name = self.annotationTitle
+                        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
+                        item.openInMaps(launchOptions: launchOptions)
+                    }
+                }
+
+            }
+        }
+    }
     
     
     @objc func chooseLocation(gestureRecognizer: UILongPressGestureRecognizer) {

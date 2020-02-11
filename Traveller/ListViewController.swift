@@ -15,6 +15,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var titleArray = [String]()
     var idArray = [UUID]()
+    
     var chosenTitle = ""
     var chosenTitleID : UUID?
     
@@ -30,6 +31,9 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(getData), name: NSNotification.Name("newPlace"), object: nil)
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return titleArray.count
@@ -61,7 +65,9 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    func getData() {
+    
+    
+    @objc func getData() {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -94,8 +100,6 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         
     }
-    
-    
     
     
     @objc func addButtonClicked() {

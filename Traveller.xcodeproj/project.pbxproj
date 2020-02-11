@@ -62,8 +62,8 @@
 			children = (
 				8491B1E123EEF89000846446 /* AppDelegate.swift */,
 				8491B1E323EEF89000846446 /* SceneDelegate.swift */,
-				8491B1E523EEF89000846446 /* ViewController.swift */,
 				8491B1F823F18EB700846446 /* ListViewController.swift */,
+				8491B1E523EEF89000846446 /* ViewController.swift */,
 				8491B1E723EEF89000846446 /* Main.storyboard */,
 				8491B1ED23EEF89100846446 /* Assets.xcassets */,
 				8491B1EF23EEF89100846446 /* LaunchScreen.storyboard */,
